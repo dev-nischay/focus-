@@ -1,16 +1,13 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import type { NextAuthOptions } from "next-auth";
 import { prisma } from "@/prisma/db";
 import bcrypt from "bcrypt";
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      // The name to display on the sign in form (e.g. "Sign in with...")
       name: "Enter your credentials",
-      // `credentials` is used to generate a form on the sign in page.
-      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-      // e.g. domain, username, password, 2FA token, etc.
-      // You can pass any HTML attribute to the <input> tag through the object.
+
       credentials: {
         email: { label: "email", type: "email", placeholder: "johnwick@gmail.com" },
         password: { label: "Password", type: "password" },
@@ -32,8 +29,9 @@ const handler = NextAuth({
           }
 
           return {
-            id: user.id,
-            name: user.username,
+            id: String(user.id),
+            userId: user.id,
+            username: user.username,
             email: user.email,
           };
         } else {
@@ -46,19 +44,20 @@ const handler = NextAuth({
 
   callbacks: {
     async jwt({ token, user }) {
-      if (user && user.email && user.name) {
-        token.userId = user.id;
+      if (user) {
+        token.userId = user.userId;
         token.email = user.email;
-        token.username = user.name;
+        token.username = user.username;
       }
       return token;
     },
 
     async session({ session, token }) {
-      if (token) {
+      if (token.userId !== undefined && token.email && token.username) {
         session.user = {
           ...session.user,
           userId: token.userId,
+          email: token.email,
           username: token.username,
         };
       }
@@ -68,6 +67,8 @@ const handler = NextAuth({
       return `${baseUrl}/`;
     },
   },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
