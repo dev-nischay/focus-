@@ -15,6 +15,7 @@ const handler = NextAuth({
         email: { label: "email", type: "email", placeholder: "johnwick@gmail.com" },
         password: { label: "Password", type: "password" },
       },
+
       async authorize(credentials, req) {
         const rawData = credentials;
 
@@ -41,6 +42,8 @@ const handler = NextAuth({
       },
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
+
   callbacks: {
     async jwt({ token, user }) {
       if (user && user.email && user.name) {
@@ -50,6 +53,7 @@ const handler = NextAuth({
       }
       return token;
     },
+
     async session({ session, token }) {
       if (token) {
         session.user = {
@@ -59,6 +63,9 @@ const handler = NextAuth({
         };
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      return `${baseUrl}/`;
     },
   },
 });

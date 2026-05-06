@@ -15,9 +15,10 @@ datasource db {
 
 model User{
   id Int @id  @default(autoincrement())
-  name String? @db.VarChar(255) 
+  username String @db.VarChar(255) 
   email String  @db.VarChar(254) @unique
-  image String
+  password String 
+  image String @default("https://www.svgrepo.com/show/535711/user.svg")
   createdAt DateTime @default(now())
   focusSessions FocusSession[]
   sessionNotes SessionNotes[]
