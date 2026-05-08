@@ -5,16 +5,16 @@ import z, { treeifyError } from "zod";
 import { FocusSession } from "@/prisma/generated/client";
 import { ApiError, ApiResponse, httpStatus } from "@/types/response.types";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { EndFocusSessionBody } from "@/types/request-body.types";
+import { calulateDuration } from "@/utils/calculateDuration";
+
 export async function PATCH(req: NextRequest): Promise<NextResponse<ApiResponse<FocusSession> | ApiError>> {
   const requestSchema = z.object({
-    endTime: z.date(),
     sessionId: z.int(),
   });
 
   try {
     const session = await getServerSession(authOptions);
-    const data = (await req.json()) as EndFocusSessionBody;
+    const data = (await req.json()) as { sessionId: number };
     const validate = requestSchema.safeParse(data);
 
     if (!session) {
@@ -34,15 +34,24 @@ export async function PATCH(req: NextRequest): Promise<NextResponse<ApiResponse<
       );
     }
 
-    const { endTime, sessionId } = validate.data;
+    const { sessionId } = validate.data;
 
     const currentSession = await prisma.focusSession.findUnique({
       where: { id: sessionId },
-      select: { startTime: true },
+      select: { endTime: true, startTime: true },
     });
 
-    // call the duration function here calculate the duration and save it in the db
-    const duration = 12323; // asumming this is calculate version
+    if (!currentSession || currentSession.endTime) {
+      return NextResponse.json(
+        { error: "focus session must be active to end", success: false, status: httpStatus.Conflict },
+        { status: httpStatus.Conflict },
+      );
+    }
+
+    // call the duration function here calculate the duration in minutes and save it in the db
+
+    const endTime = new Date();
+    const duration = calulateDuration(currentSession.startTime, endTime);
 
     const endedSession = await prisma.focusSession.update({
       where: { id: sessionId },
@@ -58,15 +67,3 @@ export async function PATCH(req: NextRequest): Promise<NextResponse<ApiResponse<
     );
   }
 }
-
-const calulateDuration = (startTime: Date, endTime: Date) => {
-  const diffInMs = date2.getTime() - date1.getTime();
-  const durationInMinutes = Math.floor(diffInMs / (1000 * 60));
-
-  return durationInMinutes;
-};
-
-const date1 = new Date("2026-05-05T18:00:19.581Z");
-const date2 = new Date("2026-05-05T21:40:19.581Z");
-
-console.log(calulateDuration(date1, date2));
