@@ -3,33 +3,39 @@ import bcrypt from "bcrypt";
 import { z } from "zod";
 import { prisma } from "@/prisma/db";
 import type { ApiError, ApiResponse } from "@/types/response.types";
-import { getServerSession } from "next-auth";
+import { httpStatus } from "@/types/response.types";
+import { User } from "@/prisma/generated/client";
 
-export type User = {
-  id: number;
-  email: string;
-  username: string;
-  image: string;
-};
 export async function POST(req: NextRequest): Promise<NextResponse<ApiResponse<User> | ApiError>> {
-  const schema = z.object({
+  const requestSchema = z.object({
     email: z.email(),
     password: z.string(),
   });
 
   try {
-    const validate = schema.safeParse(await req.json());
+    const validate = requestSchema.safeParse(await req.json());
 
     if (validate.error) {
       const tree = z.treeifyError(validate.error);
 
-      return NextResponse.json({ success: false, error: "Invalid field data", fieldErrors: tree.properties });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid field data",
+          fieldErrors: tree.properties,
+          status: httpStatus.BadRequest,
+        },
+        { status: httpStatus.BadRequest },
+      );
     }
 
     const alreadyExists = await prisma.user.findUnique({ where: { email: validate.data.email } });
 
     if (alreadyExists?.email) {
-      return NextResponse.json({ success: false, error: "user already exists" });
+      return NextResponse.json(
+        { success: false, error: "user already exists", status: httpStatus.Conflict },
+        { status: httpStatus.Conflict },
+      );
     }
 
     const { email, password } = validate.data;
@@ -38,12 +44,14 @@ export async function POST(req: NextRequest): Promise<NextResponse<ApiResponse<U
 
     const user = await prisma.user.create({
       data: { email, password: hashPassword, username },
-      select: { id: true, email: true, username: true, image: true },
     });
 
-    return NextResponse.json({ success: true, data: user });
+    return NextResponse.json({ success: true, data: user, status: httpStatus.Created }, { status: httpStatus.Created });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ success: false, error: "Something went wrong" });
+    return NextResponse.json(
+      { success: false, error: "Something went wrong", status: httpStatus.InternalServerError },
+      { status: httpStatus.InternalServerError },
+    );
   }
 }
