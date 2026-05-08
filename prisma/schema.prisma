@@ -30,7 +30,7 @@ model FocusSession{
   title String
   startTime DateTime
   endTime DateTime?
-  duration Int
+  duration Int?
   createdAt DateTime @default(now())
   user User  @relation(fields: [userId],references: [id])
   sessionNotes SessionNotes?
