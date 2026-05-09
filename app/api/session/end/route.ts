@@ -67,3 +67,13 @@ export async function PATCH(req: NextRequest): Promise<NextResponse<ApiResponse<
     );
   }
 }
+
+// - total focus hours
+// - today’s focus hours
+// - weekly focus hours
+// - total sessions
+// - average session length
+// - weekly session progress
+// - top sessions leaderboard
+// - recent sessions
+// - recent notes -- for now not fixed for prod
