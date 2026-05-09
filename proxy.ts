@@ -1,11 +1,9 @@
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-import path from "path";
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  const isPublicPage = pathname === "/" || pathname === "signin" || pathname === "signup";
+  const isPublicPage = pathname === "/" || pathname === "/signin" || pathname === "/signup";
   const isPublicApi = pathname.startsWith("/api/auth") || pathname.startsWith("/api/signup");
 
   if (isPublicApi || isPublicPage) {
@@ -19,25 +17,16 @@ export async function proxy(req: NextRequest) {
 
   if (!session) {
     if (pathname.startsWith("/api")) {
-      NextResponse.json({ success: false, error: "Unauthorized" });
+      return NextResponse.json({ success: false, error: "Unauthorized access", status: 401 }, { status: 401 });
     } else {
       const url = new URL("/", req.url);
 
-      NextResponse.redirect(url);
+      return NextResponse.redirect(url);
     }
   }
 
   return NextResponse.next();
 }
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
