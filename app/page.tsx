@@ -1,65 +1,47 @@
-import Image from "next/image";
-
-export default function Home() {
+import { Auth } from "@/components/Auth";
+export default async function AuthPage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="min-h-screen bg-[#FAF7F2] flex items-center justify-center p-6 ">
+      <div className="w-full max-w-5xl grid  grid-cols-1 md:grid-cols-2 rounded-2xl overflow-hidden border border-[#E0D4C0] shadow-md xl:max-w-5xl ">
+        {/* ── Left panel ── */}
+        <div className="relative bg-[#EBE2D4] p-12 flex flex-col justify-between overflow-hidden">
+          {/* decorative circles */}
+          <div className="absolute -top-10 -right-10 w-56 h-56 rounded-full bg-[#D4C5A9] opacity-50 pointer-events-none" />
+          <div className="absolute -bottom-16 -left-8 w-64 h-64 rounded-full bg-[#D4C5A9] opacity-35 pointer-events-none" />
+
+          {/* Brand */}
+          <div className="relative z-10">
+            <p className="font-sans text-2xl font-semibold text-[#3C2A14]">Focus</p>
+            <p className="text-sm text-[#8B7A63] mt-1">Stay focused, stay curious</p>
+          </div>
+
+          {/* Quote */}
+          <div className="relative z-10">
+            <p className="font-sans text-6xl text-[#C4A882] leading-none mb-[-8px]">"</p>
+            <p className="font-sans italic text-[17px] text-[#4A3520] leading-relaxed mb-4">
+              A focused hour is worth more than a distracted day. Show up, sit down, and begin.
+            </p>
+            <p className="text-xs text-[#8B7A63] font-medium tracking-widest uppercase">— study wisdom</p>
+          </div>
+
+          {/* Stats */}
+          <div className="relative z-10 flex gap-4">
+            {[
+              { num: "2.4k", lbl: "Students" },
+              { num: "18k", lbl: "Hours logged" },
+              { num: "340", lbl: "Active rooms" },
+            ].map((s) => (
+              <div key={s.lbl} className="bg-white/80 rounded-xl px-5 py-2 text-center ">
+                <p className="text-lg font-semibold text-[#5C4323]">{s.num}</p>
+                <p className="text-[11px] text-[#8B7A63] mt-0.5">{s.lbl}</p>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+
+        {/* ── Right panel ── */}
+        <Auth />
+      </div>
+    </main>
   );
 }

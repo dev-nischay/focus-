@@ -13,7 +13,7 @@ export function SignIn({ setTab }: { setTab: Dispatch<SetStateAction<"signin" | 
 
   return (
     <div>
-      <h1 className="font-lora text-[22px] text-[#2C2416] mb-1">Welcome back</h1>
+      <h1 className="font-sans text-[22px] text-[#2C2416] mb-1">Welcome back</h1>
       <p className="text-sm text-[#8B7A63] mb-6">Pick up right where you left off</p>
 
       <Field label="Email">

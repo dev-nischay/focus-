@@ -15,7 +15,7 @@ export function SignUp({ setTab }: { setTab: Dispatch<SetStateAction<"signin" | 
 
   return (
     <div>
-      <h1 className="font-lora text-[22px] text-[#2C2416] mb-1">Join Focus</h1>
+      <h1 className="font-sans text-[22px] text-[#2C2416] mb-1">Join Focus</h1>
       <p className="text-sm text-[#8B7A63] mb-6">Create your free student account</p>
 
       <Field label="Email">
