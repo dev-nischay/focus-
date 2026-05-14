@@ -1,10 +1,11 @@
-import { CardList, CardSmall } from "../dashboard/page";
+import { div } from "framer-motion/client";
+import { CardSmall } from "@/ui/Card";
 
 export default function History() {
   const dropDownVals = ["All time", "This week", "This month"];
 
   return (
-    <div className="text-black  flex-1 px-9 py-8">
+    <>
       <div className="font-serif text-3xl tracking-tight font-light">Session History</div>
       <div className="text-sm text-main font-medium tracking-tight leading mt-1 ">Every session counts</div>
 
@@ -15,16 +16,16 @@ export default function History() {
           <CardSmall />
         </div>
 
-        <div className="grid grid-cols-1 h-screen bg-foreground mt-8 relative  border shadow rounded-xl border-customBorder   ">
+        <div className="grid grid-cols-1 h-fit bg-foreground mt-8 relative  border shadow rounded-xl border-customBorder   ">
           <div className="border-b absolute border-customBorder inset-x-0 top-16"></div>
-          <div className="h-full w-full p-5 ">
+          <div className="h-full w-full px-3 py-5 ">
             {/* header */}
-            <div className=" flex justify-between  items-center w-full   mb-10  ">
-              <div className="text-sm  font-medium text-main  uppercase  border-customBorder">all sessions</div>
+            <div className=" flex justify-between  items-center w-full px-2  ">
+              <div className="text-xs mb-1 font-semibold text-main  uppercase  border-customBorder">all sessions</div>
               <div>
                 <select
                   id="cars"
-                  className="text-xs font-medium text-black border border-taupe-700 px-2 py-2 bg-background  rounded-lg  "
+                  className="text-xs font-medium text-black border border-taupe-400 px-2 py-2 bg-background  rounded-lg p-1 "
                 >
                   {dropDownVals.map((e, index) => {
                     return (
@@ -37,10 +38,31 @@ export default function History() {
               </div>
             </div>
             {/* history list */}
-            <div>df</div>
+            <div className="mt-5 ">
+              {["react dev", "nextjs practise", "monorepo part-1", "serverless"].map((e, index) => {
+                return <ListComp title={e} key={index} />;
+              })}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
+
+export const ListComp = ({ title }: { title: string }) => {
+  return (
+    <div className="text-black  border-b  p-2 border-customBorder flex justify-between  items-center mt-2 ">
+      <div className="px-1 py-2">
+        <div className="text-sm font-medium capitalize">{title}</div>
+        <div className="text-main  mt-1 text-xs">2025-10-02</div>
+      </div>
+      <div className="text-main relative font-semibold text-sm mr-4 flex items-center gap-3">
+        <span className="text-main font-mono">1h 34m</span>
+        <span className="rounded-full size-7 text-sm bg-[#EAF2EC] text-green-800  flex justify-center items-center">
+          ✓
+        </span>
+      </div>
+    </div>
+  );
+};

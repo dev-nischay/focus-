@@ -8,7 +8,7 @@ export default function MainLayout({
   return (
     <div className="min-h-screen h-full w-full flex  text-main bg-[#faf7f2] ">
       <SideBar />
-      {children}
+      <div className="text-black  flex-1 px-9 py-8">{children}</div>
     </div>
   );
 }

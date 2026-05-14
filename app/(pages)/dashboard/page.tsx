@@ -1,15 +1,16 @@
 "use client";
 import { WeeklyProgress } from "@/ui/WeeklyProgress";
 import TopSessionsCard from "@/ui/TopSessions";
+import { CardSmall, CardLarge } from "@/ui/Card";
 export default function () {
   return (
-    <div className="text-black  flex-1 px-9 py-8">
+    <>
       <div className="font-serif text-3xl tracking-tight font-light">Good afternoon, Alex</div>
       <div className="text-sm text-main font-medium tracking-tight leading mt-1 ">
         Monday, May 4, 2025 · Keep at it!
       </div>
 
-      <div className=" mt-8 max-w-[900px]  ">
+      <div className=" mt-4 max-w-[900px]  ">
         <div className=" grid grid-cols-1 md:grid-cols-4 gap-4 ">
           <CardSmall />
           <CardSmall />
@@ -17,35 +18,17 @@ export default function () {
           <CardSmall />
         </div>
 
-        <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
           <WeeklyProgress />
           <TopSessionsCard />
         </div>
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2  gap-4  ">
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2  gap-4  ">
           <CardList />
         </div>
       </div>
-    </div>
+    </>
   );
 }
-
-export const CardSmall = () => {
-  return (
-    <div className=" w-full bg-foreground p-4 border   shadow rounded-2xl border-customBorder  ">
-      <div className="text-center flex flex-col gap-2 text-main">
-        <div className="text-xs">TODAY</div>
-        <div className="text-2xl text-green-800 font-medium">
-          2h <span className="pl-2">19m</span>
-        </div>
-        <div className="text-xs ">studied today</div>
-      </div>
-    </div>
-  );
-};
-
-export const CardLarge = () => {
-  return <div className=" w-full bg-foreground p-4 border shadow rounded-2xl border-customBorder h-52 "></div>;
-};
 
 export const CardList = () => {
   return (
