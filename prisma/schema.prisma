@@ -28,7 +28,7 @@ model FocusSession{
   id Int @id @unique  @default(autoincrement())
   userId Int 
   title String
-  startTime DateTime
+  startTime DateTime  @default(now())
   endTime DateTime?
   duration Int?
   createdAt DateTime @default(now())
@@ -44,6 +44,7 @@ model SessionNotes {
     topic String
     content String
     updatedAt DateTime?
+    isPinned Boolean @default(false)
     createdAt DateTime @default(now())
     user User @relation(fields: [userId],references: [id])
     focusSessions FocusSession @relation(fields: [sessionId],references: [id])
