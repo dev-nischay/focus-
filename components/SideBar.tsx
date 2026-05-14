@@ -1,7 +1,14 @@
+"use client";
 import { Home, History, Notebook, Timer } from "lucide-react";
-
+import { useRouter } from "next/navigation";
 export default function SideBar() {
-  const controls = ["Dashboard", "My Notes", "My Session", "History"];
+  const router = useRouter();
+  const controls = [
+    { title: "Dashboard", url: "dashboard" },
+    { title: "My Notes", url: "notes" },
+    { title: "My Session", url: "session" },
+    { title: "History", url: "history" },
+  ];
   const icons = [
     <Home className="size-4 stroke-[1.8]    " />,
     <Notebook className="size-4 stroke-[1.8]" />,
@@ -19,10 +26,11 @@ export default function SideBar() {
         {controls.map((e, index) => (
           <button
             key={index}
+            onClick={() => router.push(e.url)}
             className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] text-sm font-medium text-[#5A4A35] hover:bg-[#EBE2D4] w-full transition-colors "
           >
             <span>{icons[index]}</span>
-            {e}
+            {e.title}
           </button>
         ))}
       </div>
