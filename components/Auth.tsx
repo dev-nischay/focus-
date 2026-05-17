@@ -6,9 +6,9 @@ export function Auth() {
   const [tab, setTab] = useState<"signin" | "signup">("signin");
 
   return (
-    <div className="bg-[#FAF7F2] p-12 flex flex-col  ">
+    <div className="bg-[#FAF7F2] p-6 flex flex-col  ">
       {/* Tabs */}
-      <div className="flex gap-0 bg-[#EBE2D4] rounded-xl p-1 w-fit mb-7">
+      <div className="flex gap-0 bg-[#EBE2D4] rounded-xl p-1 w-fit mb-4">
         {(["signin", "signup"] as const).map((t) => (
           <button
             key={t}
