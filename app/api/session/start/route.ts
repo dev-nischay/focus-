@@ -36,7 +36,6 @@ export async function POST(req: NextRequest): Promise<NextResponse<ApiResponse<F
       data: {
         userId: Number(session.user.userId),
         title: validate.data.title,
-        startTime: new Date(),
         endTime: null,
         duration: null,
       },
