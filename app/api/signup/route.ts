@@ -21,7 +21,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<ApiResponse<U
       return NextResponse.json(
         {
           success: false,
-          error: "Invalid field data",
+          error: "Incorrect email or password",
           fieldErrors: tree.properties,
           status: httpStatus.BadRequest,
         },

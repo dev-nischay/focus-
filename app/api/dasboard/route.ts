@@ -6,7 +6,7 @@ import { prisma } from "@/prisma/db";
 import { analyticsCalculator, topSessionsCalculator, recentSessionCalculator, convertToDays } from "@/utils/analytics";
 import { DashBoardResponse } from "@/types/request-body.types";
 
-export async function POST(req: NextRequest): Promise<NextResponse<ApiResponse<DashBoardResponse | []> | ApiError>> {
+export async function GET(req: NextRequest): Promise<NextResponse<ApiResponse<DashBoardResponse | []> | ApiError>> {
   try {
     const session = await getServerSession(authOptions);
 
