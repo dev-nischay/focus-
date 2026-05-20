@@ -1,6 +1,6 @@
-import { CardLarge, CardSmall } from "@/ui/Card";
+import FocusTimer from "@/components/FocusTimer";
 
-export default function SessionPage() {
+export default async function SessionPage() {
   return (
     <>
       <div className="font-serif text-3xl tracking-tight font-light">My Session</div>
@@ -11,23 +11,13 @@ export default function SessionPage() {
           {/* Session Main */}
           <div className="w-full bg-foreground p-4 border shadow rounded-2xl border-customBorder h-100 col-span-2 row-span-3 ">
             <div className="p-4 text-center">
-              <div className="uppercase text-main tracking-wider  font-semibold text-xs">ready to focus?</div>
-
-              {/* Session Timer */}
-              <div className="flex justify-center items-center">
-                <div className="size-60 flex items-center justify-center bg-background rounded-full border-2 border-customBorder mt-4">
-                  <div className="text-5xl text-heading ">00:00:00</div>
-                </div>
-              </div>
-              <button className="mt-6 bg-green-800 text-white font-bold rounded-lg px-6 py-3 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer">
-                Start Session
-              </button>
+              <FocusTimer />
             </div>
           </div>
 
           {/* Today Goal */}
           <div className=" w-full h-fit bg-foreground p-5 border   shadow rounded-2xl border-customBorder">
-            <div className="uppercase text-main tracking-wider  font-semibold text-xs">today's goal</div>
+            <div className="uppercase text-main tracking-wider  font-semibold text-xs">today&apos;s goal</div>
             <div className="mt-2 text-sm  bg-[#EAF2EC] text-green-800   p-3 rounded-lg  ">
               Complete practise problems for midterm review
             </div>
