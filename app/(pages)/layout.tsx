@@ -1,4 +1,5 @@
 import SideBar from "@/components/SideBar";
+import { SessionProvider } from "next-auth/react";
 
 export default function MainLayout({
   children,
@@ -8,7 +9,11 @@ export default function MainLayout({
   return (
     <div className="min-h-screen h-full w-full flex  text-main bg-[#faf7f2] ">
       <SideBar />
-      <div className="text-black  flex-1 px-9 py-8">{children}</div>
+      <div className="text-black  flex-1 px-9 py-8">
+        <SessionProvider>{children}</SessionProvider>
+      </div>
     </div>
   );
 }
+
+// add session checks and redirect to signup page
