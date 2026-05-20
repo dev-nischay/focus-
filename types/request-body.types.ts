@@ -16,6 +16,14 @@ export type DashBoardResponse = {
   allTime: number;
   totalSessions: number;
   topSessions: { createdAt: Date; duration: number; title: string }[];
-  weekelyProgress: number[];
+  weeklyProgress: {
+    mon: number;
+    tues: number;
+    wed: number;
+    thu: number;
+    fri: number;
+    sat: number;
+    sun: number;
+  };
   recentSessions: { createdAt: Date; duration: number; title: string }[];
 };
