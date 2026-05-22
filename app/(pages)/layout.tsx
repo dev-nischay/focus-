@@ -1,6 +1,6 @@
 import SideBar from "@/components/SideBar";
 import { SessionProvider } from "next-auth/react";
-
+import { AuthGuard } from "./authGuard";
 export default function MainLayout({
   children,
 }: Readonly<{
@@ -10,7 +10,9 @@ export default function MainLayout({
     <div className="min-h-screen h-full w-full flex  text-main bg-[#faf7f2] ">
       <SideBar />
       <div className="text-black  flex-1 px-9 py-8">
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          <AuthGuard>{children}</AuthGuard>
+        </SessionProvider>
       </div>
     </div>
   );
