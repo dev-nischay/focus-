@@ -1,12 +1,16 @@
-export const CardSmall = () => {
+import { minToHours } from "@/utils/timeCals";
+
+export const CardSmall = ({ mins, title, context }: { mins: number; title: string; context: string }) => {
+  const { hours, minutes } = minToHours(mins);
+
   return (
     <div className=" w-full h-fit bg-foreground p-4 border   shadow rounded-2xl border-customBorder  ">
       <div className="text-center flex flex-col gap-2 text-main">
-        <div className="text-xs">TODAY</div>
+        <div className="text-xs">{title}</div>
         <div className="text-2xl text-green-800 font-medium">
-          2h <span className="pl-2">19m</span>
+          {hours}h <span className="pl-2">{minutes}m</span>
         </div>
-        <div className="text-xs ">studied today</div>
+        <div className="text-xs ">{context}</div>
       </div>
     </div>
   );

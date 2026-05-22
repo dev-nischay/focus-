@@ -3,32 +3,45 @@
 type DayData = {
   label: string;
   hours: number;
-  sessions: number;
+};
+
+type WeeklyUpdates = {
+  mon: number;
+  tues: number;
+  wed: number;
+  thu: number;
+  fri: number;
+  sat: number;
+  sun: number;
 };
 
 type WeeklyProgressProps = {
-  days?: DayData[];
-  /** 0 = Mon … 6 = Sun. Omit to use the viewer’s current weekday. */
+  weeklyUpdates: WeeklyUpdates;
   todayIndex?: number;
 };
 
-/** Map JS Sunday=0…Saturday=6 to chart index Mon=0 … Sun=6 */
 function mondayFirstWeekdayIndex(d = new Date()) {
   const js = d.getDay();
   return js === 0 ? 6 : js - 1;
 }
 
-const defaultDays: DayData[] = [
-  { label: "Mon", hours: 1.5, sessions: 2 },
-  { label: "Tue", hours: 3.0, sessions: 3 },
-  { label: "Wed", hours: 2.25, sessions: 2 },
-  { label: "Thu", hours: 4.5, sessions: 4 },
-  { label: "Fri", hours: 3.75, sessions: 3 },
-  { label: "Sat", hours: 2, sessions: 1 },
-  { label: "Sun", hours: 4, sessions: 4 },
-];
+const convertToDays = (weeklyUpdates: WeeklyUpdates) => {
+  const convertToHours = (minutes: number) => {
+    return Math.floor((minutes * 10) / 60) / 10;
+  };
 
-export function WeeklyProgress({ days = defaultDays, todayIndex }: WeeklyProgressProps) {
+  const daysData: DayData[] = [];
+
+  for (const [key, value] of Object.entries(weeklyUpdates)) {
+    daysData.push({ label: key, hours: convertToHours(value) });
+  }
+
+  return daysData;
+};
+
+export function WeeklyProgress({ weeklyUpdates, todayIndex }: WeeklyProgressProps) {
+  const days = convertToDays(weeklyUpdates);
+
   const todayIx = todayIndex ?? mondayFirstWeekdayIndex(new Date());
   const maxHours = Math.max(...days.map((d) => d.hours), 1);
   const gridMax = Math.ceil(maxHours / 2) * 2;
@@ -72,9 +85,7 @@ export function WeeklyProgress({ days = defaultDays, todayIndex }: WeeklyProgres
               {/* Hover tooltip */}
               <div className="absolute bottom-[calc(100%-18px)] left-1/2 -translate-x-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                 <div className="bg-white border border-[#D4C5A9] rounded-lg px-2 py-1 text-[11px] font-medium text-[#2C2416] whitespace-nowrap shadow-sm">
-                  {day.hours > 0
-                    ? `${day.hours}h · ${day.sessions} ${day.sessions === 1 ? "session" : "sessions"}`
-                    : "No session"}
+                  {day.hours > 0 ? `${day.hours}h ` : "No session"}
                 </div>
               </div>
 
