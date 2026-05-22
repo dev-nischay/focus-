@@ -1,5 +1,3 @@
-"use client";
-
 type DayData = {
   label: string;
   hours: number;
@@ -39,7 +37,7 @@ const convertToDays = (weeklyUpdates: WeeklyUpdates) => {
   return daysData;
 };
 
-export function WeeklyProgress({ weeklyUpdates, todayIndex }: WeeklyProgressProps) {
+export async function WeeklyProgress({ weeklyUpdates, todayIndex }: WeeklyProgressProps) {
   const days = convertToDays(weeklyUpdates);
 
   const todayIx = todayIndex ?? mondayFirstWeekdayIndex(new Date());

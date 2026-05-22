@@ -1,5 +1,3 @@
-"use client";
-
 import { minToHours } from "@/utils/timeCals";
 
 type SessionData = {
