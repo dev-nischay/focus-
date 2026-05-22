@@ -18,12 +18,6 @@ export async function GET(req: NextRequest): Promise<NextResponse<ApiResponse<Fo
 
     const focusSessionHistory = await prisma.focusSession.findMany({ where: { userId: session.user.userId } });
 
-    if (!focusSessionHistory)
-      return NextResponse.json(
-        { error: "sessions not found ", success: false, status: httpStatus.BadRequest },
-        { status: httpStatus.BadRequest },
-      );
-
     return NextResponse.json(
       { data: focusSessionHistory, success: true, status: httpStatus.Ok },
       { status: httpStatus.Ok },
