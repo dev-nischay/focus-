@@ -1,9 +1,23 @@
-import { div } from "framer-motion/client";
+import { prisma } from "@/prisma/db";
+import { FocusSession } from "@/prisma/generated/client";
+import { ApiResponse } from "@/types/response.types";
 import { CardSmall } from "@/ui/Card";
-
-export default function History() {
+import { minToHours } from "@/utils/timeCals";
+import axios, { AxiosResponse } from "axios";
+import { useSession } from "next-auth/react";
+export default async function History() {
   const dropDownVals = ["All time", "This week", "This month"];
+  const session = useSession();
 
+  const data = await prisma.focusSession.aggregate({
+    where: { userId: session.data!.user.userId },
+    _avg: { duration: true },
+    _count: { userId: true },
+    _sum: { duration: true },
+  });
+
+  const res = (await axios.get("/api/history/")).data as AxiosResponse<ApiResponse<FocusSession[]>>;
+  const history = res.data.data;
   return (
     <>
       <div className="font-serif text-3xl tracking-tight font-light">Session History</div>
@@ -11,9 +25,9 @@ export default function History() {
 
       <div className=" mt-8 max-w-[900px] ">
         <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
-          <CardSmall />
-          <CardSmall />
-          <CardSmall />
+          <CardSmall title="total sessions" context="completed" singleVal={data._count.userId} />
+          <CardSmall title="total time" context="focused" mins={data._sum.duration ?? 0} />
+          <CardSmall title="avg session" context="per session" mins={data._count.userId} />
         </div>
 
         <div className="grid grid-cols-1 h-fit bg-foreground mt-8 relative  border shadow rounded-xl border-customBorder   ">
@@ -39,9 +53,13 @@ export default function History() {
             </div>
             {/* history list */}
             <div className="mt-5 ">
-              {["react dev", "nextjs practise", "monorepo part-1", "serverless"].map((e, index) => {
-                return <ListComp title={e} key={index} />;
-              })}
+              {history.length > 0 ? (
+                history.map((e, index) => {
+                  return <ListComp title={e.title} key={index} date={e.createdAt} duration={e.duration!} />;
+                })
+              ) : (
+                <div>No completed sessions to display</div>
+              )}
             </div>
           </div>
         </div>
@@ -50,15 +68,20 @@ export default function History() {
   );
 }
 
-export const ListComp = ({ title }: { title: string }) => {
+export const ListComp = ({ title, date, duration }: { title: string; date: Date; duration: number }) => {
+  const { hours, minutes } = minToHours(duration);
+
+  const formatDate = date.toISOString().split("T")[0];
   return (
     <div className="text-black  border-b  p-2 border-customBorder flex justify-between  items-center mt-2 ">
       <div className="px-1 py-2">
         <div className="text-sm font-medium capitalize">{title}</div>
-        <div className="text-main  mt-1 text-xs">2025-10-02</div>
+        <div className="text-main  mt-1 text-xs">{formatDate}</div>
       </div>
       <div className="text-main relative font-semibold text-sm mr-4 flex items-center gap-3">
-        <span className="text-main font-mono">1h 34m</span>
+        <span className="text-main font-mono">
+          `${hours}h ${minutes},`
+        </span>
         <span className="rounded-full size-7 text-sm bg-[#EAF2EC] text-green-800  flex justify-center items-center">
           ✓
         </span>
