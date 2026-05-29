@@ -9,10 +9,11 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 export async function POST(req: NextRequest): Promise<NextResponse<ApiResponse<FocusSession> | ApiError>> {
   const requestSchema = z.object({
     title: z.string(),
+    goal: z.string(),
   });
 
   try {
-    const data = (await req.json()) as { title: string };
+    const data = (await req.json()) as { title: string; goal: string };
     const session = await getServerSession(authOptions);
     const validate = requestSchema.safeParse(data);
 
@@ -36,6 +37,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<ApiResponse<F
       data: {
         userId: Number(session.user.userId),
         title: validate.data.title,
+        goal: validate.data.goal,
         endTime: null,
         duration: null,
       },

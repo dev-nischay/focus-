@@ -7,9 +7,9 @@ import { ApiError, ApiResponse, httpStatus } from "@/types/response.types";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { calulateDuration } from "@/utils/calculateDuration";
 
-export async function PATCH(req: NextRequest): Promise<NextResponse<ApiResponse<FocusSession> | ApiError>> {
+export async function POST(req: NextRequest): Promise<NextResponse<ApiResponse<FocusSession> | ApiError>> {
   const requestSchema = z.object({
-    sessionId: z.int(),
+    sessionId: z.number(),
   });
 
   try {
@@ -34,7 +34,7 @@ export async function PATCH(req: NextRequest): Promise<NextResponse<ApiResponse<
       );
     }
 
-    const { sessionId } = validate.data;
+    const sessionId = validate.data.sessionId;
 
     const currentSession = await prisma.focusSession.findUnique({
       where: { id: sessionId },
