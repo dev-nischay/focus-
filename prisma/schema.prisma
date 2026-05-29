@@ -28,6 +28,7 @@ model FocusSession{
   id Int @id @unique  @default(autoincrement())
   userId Int 
   title String
+  goal String? @default("practise session")
   startTime DateTime  @default(now())
   endTime DateTime?
   duration Int?
