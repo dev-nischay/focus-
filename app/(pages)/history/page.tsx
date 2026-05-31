@@ -1,23 +1,31 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from "@/prisma/db";
 import { FocusSession } from "@/prisma/generated/client";
 import { ApiResponse } from "@/types/response.types";
 import { CardSmall } from "@/ui/Card";
 import { minToHours } from "@/utils/timeCals";
 import axios, { AxiosResponse } from "axios";
-import { useSession } from "next-auth/react";
-export default async function History() {
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+export default async function HistoryPage() {
   const dropDownVals = ["All time", "This week", "This month"];
-  const session = useSession();
+  const session = await getServerSession(authOptions);
 
-  const data = await prisma.focusSession.aggregate({
-    where: { userId: session.data!.user.userId },
+  if (!session?.user) {
+    return redirect("/");
+  }
+
+  const analyticsPromise = prisma.focusSession.aggregate({
+    where: { userId: session.user.userId },
     _avg: { duration: true },
     _count: { userId: true },
     _sum: { duration: true },
   });
 
-  const res = (await axios.get("/api/history/")).data as AxiosResponse<ApiResponse<FocusSession[]>>;
-  const history = res.data.data;
+  const historyPromise = prisma.focusSession.findMany({ where: { userId: session.user.userId } });
+
+  const [analytics, history] = await Promise.all([analyticsPromise, historyPromise]);
+
   return (
     <>
       <div className="font-serif text-3xl tracking-tight font-light">Session History</div>
@@ -25,9 +33,9 @@ export default async function History() {
 
       <div className=" mt-8 max-w-[900px] ">
         <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
-          <CardSmall title="total sessions" context="completed" singleVal={data._count.userId} />
-          <CardSmall title="total time" context="focused" mins={data._sum.duration ?? 0} />
-          <CardSmall title="avg session" context="per session" mins={data._count.userId} />
+          <CardSmall title="total sessions" context="completed" singleVal={analytics._count.userId} />
+          <CardSmall title="total time" context="focused" mins={analytics._sum.duration ?? 0} />
+          <CardSmall title="avg session" context="per session" mins={analytics._count.userId} />
         </div>
 
         <div className="grid grid-cols-1 h-fit bg-foreground mt-8 relative  border shadow rounded-xl border-customBorder   ">
@@ -52,7 +60,7 @@ export default async function History() {
               </div>
             </div>
             {/* history list */}
-            <div className="mt-5 ">
+            <div>
               {history.length > 0 ? (
                 history.map((e, index) => {
                   return <ListComp title={e.title} key={index} date={e.createdAt} duration={e.duration!} />;
@@ -80,7 +88,7 @@ export const ListComp = ({ title, date, duration }: { title: string; date: Date;
       </div>
       <div className="text-main relative font-semibold text-sm mr-4 flex items-center gap-3">
         <span className="text-main font-mono">
-          `${hours}h ${minutes},`
+          {hours}h {minutes}m
         </span>
         <span className="rounded-full size-7 text-sm bg-[#EAF2EC] text-green-800  flex justify-center items-center">
           ✓

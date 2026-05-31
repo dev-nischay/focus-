@@ -1,20 +1,33 @@
 import TopSessionsCard from "@/ui/TopSessions";
 import { CardSmall } from "@/ui/Card";
 import { WeeklyProgress } from "@/ui/WeeklyProgress";
-import axios from "axios";
 import { DashBoardResponse } from "@/types/request-body.types";
-import { Divide } from "lucide-react";
 import { minToHours } from "@/utils/timeCals";
-export default async function () {
-  const data = await axios.get("/api/dashboard/");
-  const analytics = (await data.data) as DashBoardResponse;
+import { cookies, headers } from "next/headers";
+
+export default async function DashboardPage() {
+  const cookieStore = await cookies();
+  const headersList = await headers();
+  const host = headersList.get("host") ?? "localhost:3000";
+  const protocol = headersList.get("x-forwarded-proto") ?? "http";
+
+  const res = await fetch(`${protocol}://${host}/api/dasboard`, {
+    headers: {
+      cookie: cookieStore.toString(),
+    },
+    cache: "no-store",
+  });
+
+  const response = await res.json();
+
+  const analytics = response.data as DashBoardResponse;
   const currentDate = new Date().toString().split(" ");
   const recentSession = analytics.recentSessions;
   return (
     <>
       <div className="font-serif text-3xl tracking-tight font-light">Good afternoon, Alex</div>
       <div className="text-sm text-main font-medium tracking-tight leading mt-1 ">
-        `${currentDate[0]},${currentDate[1]},${currentDate[2]},${currentDate[3]}` · Keep at it!
+        {currentDate[0]}, {currentDate[1]},{currentDate[2]},{currentDate[3]} · Keep at it!
       </div>
 
       <div className=" mt-4 max-w-[900px]  ">
@@ -23,7 +36,6 @@ export default async function () {
           <CardSmall title="this week" context="total this week" mins={analytics.thisWeek} />
           <CardSmall title="all time" context="total focused" mins={analytics.allTime} />
           <CardSmall title="sessions" context="sessions joined" singleVal={analytics.totalSessions} />
-          {/* fix total session as there are no mins and hours */}
         </div>
 
         <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -34,9 +46,9 @@ export default async function () {
           <div className=" w-full bg-foreground p-4 border shadow rounded-2xl border-customBorder h-fit ">
             <div className="text-main font-medium text-xs  uppercase ">Recent Sessions</div>
             {recentSession.length > 0 ? (
-              recentSession.map((e) => <CardList recentSessions={e} />)
+              recentSession.map((e, i) => <RecentSession recentSessions={e} key={i} />)
             ) : (
-              <div>No completed sessions to display</div>
+              <div className="text-sm text-black/80 mt-2">No completed sessions to display</div>
             )}
           </div>
         </div>
@@ -45,7 +57,7 @@ export default async function () {
   );
 }
 
-export const CardList = ({
+export const RecentSession = ({
   recentSessions,
 }: {
   recentSessions: {
@@ -56,7 +68,8 @@ export const CardList = ({
 }) => {
   const { hours, minutes } = minToHours(recentSessions.duration);
 
-  const formatDate = recentSessions.createdAt.toISOString().split("T")[0];
+  const creationDate = new Date(recentSessions.createdAt);
+  const formatDate = creationDate.toISOString().split("T")[0];
 
   return (
     <div className="flex flex-col  p-1  ">
@@ -66,7 +79,7 @@ export const CardList = ({
           <div className="text-main   text-xs">{formatDate}</div>
         </div>
         <div className="text-main font-semibold text-sm">
-          `${hours}h ${minutes}m`
+          {hours}h {minutes}m
         </div>
       </div>
     </div>
