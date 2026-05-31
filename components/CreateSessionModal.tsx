@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
-export function CreateSessionModal({ onClose, onCreate }: { onClose: () => void; onCreate: () => void }) {
+export function CreateSessionModal({ onCreate }: { onCreate: () => void }) {
   const titleRef = useRef<HTMLInputElement | null>(null);
   const goalRef = useRef<HTMLInputElement | null>(null);
   const [toggle, setTogle] = useState(false);
