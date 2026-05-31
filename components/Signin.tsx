@@ -43,7 +43,20 @@ export function SignIn({ setTab }: { setTab: Dispatch<SetStateAction<"signin" | 
     });
 
     if (res?.error) {
-      setError(res.error);
+      let statusCode = res.status;
+      let error = "";
+
+      switch (statusCode) {
+        case 401:
+          error = "user not found ";
+          break;
+
+        case 500:
+          error = "something went wrong";
+          break;
+      }
+
+      setError(error);
     } else {
       router.push("/session");
     }

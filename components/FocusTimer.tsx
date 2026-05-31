@@ -1,8 +1,24 @@
 "use client";
-import { useState, useEffect, useCallback, useRef } from "react";
-export function FocusTimer() {
+import axios, { AxiosResponse } from "axios";
+import { FocusSession } from "@/prisma/generated/client";
+import { useState, useEffect, useCallback, useRef, RefObject } from "react";
+import { ApiResponse } from "@/types/response.types";
+import { useRouter } from "next/navigation";
+
+export function FocusTimer({
+  title,
+  goal,
+  ref,
+}: {
+  title: string;
+  goal: string;
+  ref: RefObject<HTMLTextAreaElement | null>;
+}) {
   const [elapsed, setElapsed] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  let sessionId = useRef<null | number>(null);
+
+  const router = useRouter();
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   function formatElapsed(seconds: number) {
@@ -29,17 +45,47 @@ export function FocusTimer() {
     return () => stopInterval();
   }, [stopInterval]);
 
-  const handleToggleSession = () => {
-    if (isRunning) {
+  const handleToggleSession = async () => {
+    const notes = ref.current?.value;
+
+    // if timer is already started
+    if (isRunning && sessionId.current) {
+      // checking for notes before ending the timer
+      if (notes && notes.length > 0) {
+        await axios.post("/api/notes", {
+          content: notes,
+          sessionId: sessionId.current,
+        });
+      }
+      await axios.post("/api/session/end/", {
+        sessionId: sessionId.current,
+      });
+
       stopInterval();
       setIsRunning(false);
+      sessionId.current = null;
+      router.push("/history");
       return;
     }
+
+    // for starting the timer
+    const res = (await axios.post("/api/session/start/", {
+      title,
+      goal,
+    })) as AxiosResponse<ApiResponse<FocusSession>>;
+
+    if (!res.data.success) {
+      router.push("/session");
+      // show an error here
+    }
+
+    sessionId.current = res.data.data.id;
 
     setElapsed(0);
     startInterval();
     setIsRunning(true);
   };
+
   return (
     <div className="p-4 text-center">
       <div className="uppercase text-main tracking-wider  font-semibold text-xs">
