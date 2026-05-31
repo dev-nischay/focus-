@@ -11,7 +11,6 @@ import { ApiError } from "@/types/response.types";
 export async function POST(req: NextRequest): Promise<NextResponse<ApiResponse<SessionNotes> | ApiError>> {
   const requestSchema = z.object({
     content: z.string(),
-    topic: z.string(),
     sessionId: z.int(),
   });
 
@@ -37,7 +36,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<ApiResponse<S
       );
     }
 
-    const { content, topic, sessionId } = validate.data;
+    const { content, sessionId } = validate.data;
 
     const focusSession = await prisma.focusSession.findUnique({ where: { id: sessionId }, select: { endTime: true } });
 
@@ -49,7 +48,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<ApiResponse<S
     }
 
     const notes = await prisma.sessionNotes.upsert({
-      create: { topic, content, sessionId, userId: session.user.userId },
+      create: { content, sessionId, userId: session.user.userId },
       update: { content },
       where: { sessionId, userId: session.user.userId },
     });
