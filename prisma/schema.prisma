@@ -28,7 +28,7 @@ model FocusSession{
   id Int @id @unique  @default(autoincrement())
   userId Int 
   title String
-  goal String? @default("practise session")
+  goal String 
   startTime DateTime  @default(now())
   endTime DateTime?
   duration Int?
@@ -42,7 +42,6 @@ model SessionNotes {
     id Int @id  @default(autoincrement())
     sessionId Int @unique
     userId Int 
-    topic String
     content String
     updatedAt DateTime?
     isPinned Boolean @default(false)
