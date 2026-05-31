@@ -25,7 +25,7 @@ export const CardSmall = ({
       <div className="text-center flex flex-col gap-2 text-main">
         <div className="text-xs">{title}</div>
         <div className="text-2xl text-green-800 font-medium">
-          {singleVal ? <span>{singleVal}</span> : mins ? <DurationValue mins={mins} /> : <span></span>}
+          {singleVal ? <span>{singleVal}</span> : mins ? <DurationValue mins={mins} /> : <span>0</span>}
         </div>
         <div className="text-xs ">{context}</div>
       </div>
@@ -36,3 +36,4 @@ export const CardSmall = ({
 export const CardLarge = () => {
   return <div className={` w-full bg-foreground p-4 border shadow rounded-2xl border-customBorder h-100  `}></div>;
 };
+// figure out how it returns zero

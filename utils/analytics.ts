@@ -7,21 +7,25 @@ export const analyticsCalculator = (arr: { duration: number; createdAt: Date; ti
     weeklyUpdates: [] as { duration: number; createdAt: Date }[],
   };
 
-  const currentDate = new Date();
+  const now = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const startOfWeekWindow = new Date(startOfToday);
+  startOfWeekWindow.setDate(startOfWeekWindow.getDate() - 6);
 
   for (const { duration, createdAt } of arr) {
-    if (currentDate.getUTCDate() === createdAt.getUTCDate()) {
+    const sessionDate = new Date(createdAt);
+    const sessionDayStart = new Date(sessionDate.getFullYear(), sessionDate.getMonth(), sessionDate.getDate());
+
+    if (sessionDayStart.getTime() === startOfToday.getTime()) {
       result.today += duration;
     } // for time spent today
 
-    if (createdAt.getUTCDate() - currentDate.getUTCDate() <= 7) {
+    if (sessionDayStart >= startOfWeekWindow && sessionDate <= now) {
       result.thisWeek += duration;
       result.weeklyUpdates.push({ duration, createdAt });
     } // for time spent this week
 
-    if (duration) {
-      result.allTime += duration;
-    } // for total time spent
+    result.allTime += duration; // for total time spent
   }
   result.totalSessions = arr.length; // for total sessions
 
@@ -29,9 +33,9 @@ export const analyticsCalculator = (arr: { duration: number; createdAt: Date; ti
 };
 
 export const topSessionsCalculator = (arr: { duration: number; createdAt: Date; title: string }[]) => {
-  const sorted = arr.sort((a, b) => b.duration! - a.duration!); // top sessions
+  const sorted = [...arr].sort((a, b) => b.duration - a.duration); // top sessions
 
-  return sorted.splice(0, 5);
+  return sorted.slice(0, 5);
 };
 
 export const recentSessionCalculator = (arr: { duration: number; createdAt: Date; title: string }[]) => {
@@ -43,13 +47,13 @@ export const recentSessionCalculator = (arr: { duration: number; createdAt: Date
     const sessionDate = new Date(session.createdAt);
     return sessionDate >= twentyFourHoursAgo;
   });
-  return recentSessions.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).splice(0, 5);
+  return recentSessions.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 5);
 };
 
 export const convertToDays = (weeklyUpdates: { duration: number; createdAt: Date }[]) => {
   return weeklyUpdates.reduce(
     (acc, curr) => {
-      const currentDay = curr.createdAt.getUTCDay();
+      const currentDay = new Date(curr.createdAt).getUTCDay();
 
       switch (currentDay) {
         case 0:
@@ -76,10 +80,6 @@ export const convertToDays = (weeklyUpdates: { duration: number; createdAt: Date
         case 6:
           acc.sat += curr.duration;
           break;
-        case 7:
-          acc.sun += curr.duration;
-          break;
-
         default:
           break;
       }

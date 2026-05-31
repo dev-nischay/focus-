@@ -18,7 +18,7 @@ const TopSessionsCard = ({ topSessions }: { topSessions: SessionData }) => {
   const sessionData = topSessions.map((e) => ({ ...e, percentage: calculatePercentage(e.duration) }));
 
   return (
-    <div className="w-full bg-white p-4 rounded-3xl shadow-sm border border-stone-100  tracking-tighter">
+    <div className="w-full bg-white p-5 rounded-3xl shadow-sm border border-customBorder tracking-tighter">
       {/* 1. Card Header */}
       <div className="mb-4">
         <h2 className="text-main text-xs font-medium tracking-wide  uppercase  ">TOP SESSIONS</h2>
