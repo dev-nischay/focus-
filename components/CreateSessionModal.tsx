@@ -1,13 +1,17 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-
-export function CreateSessionModal({ onCreate }: { onCreate: () => void }) {
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { SessionData } from "@/app/(pages)/session/page";
+export function CreateSessionModal({
+  onCreate,
+}: {
+  onCreate: ({ title, goal }: { title: string; goal: string }) => void;
+}) {
   const titleRef = useRef<HTMLInputElement | null>(null);
   const goalRef = useRef<HTMLInputElement | null>(null);
-  const [toggle, setTogle] = useState(false);
+  const [toggle, setToggle] = useState(false);
 
   useEffect(() => {
-    setTogle(true);
+    setToggle(true);
   }, []);
 
   const handleCreation = () => {
@@ -16,7 +20,7 @@ export function CreateSessionModal({ onCreate }: { onCreate: () => void }) {
 
     if (title && goal) {
       localStorage.setItem("session-data", JSON.stringify({ title, goal }));
-      onCreate();
+      onCreate({ title, goal });
     } else if (!title) {
       titleRef.current?.focus();
     } else {

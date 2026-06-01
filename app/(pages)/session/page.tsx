@@ -1,12 +1,10 @@
 "use client";
 import { CreateSessionModal } from "@/components/CreateSessionModal";
 import FocusTimer from "@/components/FocusTimer";
-import { redirect } from "next/navigation";
 import { NotesInput } from "@/components/NotesInput";
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 
-type SessionData = {
+export type SessionData = {
   title: string;
   goal: string;
 };
@@ -14,24 +12,18 @@ type SessionData = {
 export default function Session() {
   const [open, setOpen] = useState(true);
   const [sessionData, setSessionData] = useState<SessionData | null>(null);
-  const router = useRouter();
+
   const notesRef = useRef<HTMLTextAreaElement | null>(null);
-
-  useEffect(() => {
-    const storage = localStorage.getItem("session-data");
-
-    if (storage) {
-      const data = JSON.parse(storage) as SessionData;
-      setSessionData(data);
-    } else {
-      router.push("/dashboard");
-    }
-  }, []);
 
   return (
     <>
       {open ? (
-        <CreateSessionModal onCreate={() => setOpen(false)} />
+        <CreateSessionModal
+          onCreate={({ title, goal }) => {
+            setSessionData({ title, goal });
+            setOpen(false);
+          }}
+        />
       ) : (
         <>
           <div className="font-serif text-3xl tracking-tight font-light ">{sessionData!.title}</div>
