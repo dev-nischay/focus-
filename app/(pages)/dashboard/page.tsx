@@ -22,7 +22,7 @@ export default async function DashboardPage() {
 
   const analytics = response.data as DashBoardResponse;
   const currentDate = new Date().toString().split(" ");
-  const recentSession = analytics.recentSessions;
+  const recentSession = analytics.recentSessions ?? [];
   return (
     <>
       <div className="font-serif text-3xl tracking-tight font-light">Good afternoon, Alex</div>
@@ -39,8 +39,8 @@ export default async function DashboardPage() {
         </div>
 
         <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <WeeklyProgress weeklyUpdates={analytics.weeklyProgress} />
-          <TopSessionsCard topSessions={analytics.topSessions} />
+          <WeeklyProgress weeklyUpdates={analytics.weeklyProgress ?? []} />
+          <TopSessionsCard topSessions={analytics.topSessions ?? []} />
         </div>
         <div className="mt-4 grid grid-cols-1 md:grid-cols-2  gap-4  ">
           <div className=" w-full bg-foreground p-4 border shadow rounded-2xl border-customBorder h-fit ">

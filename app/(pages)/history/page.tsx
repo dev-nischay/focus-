@@ -66,7 +66,7 @@ export default async function HistoryPage() {
                   return <ListComp title={e.title} key={index} date={e.createdAt} duration={e.duration!} />;
                 })
               ) : (
-                <div>No completed sessions to display</div>
+                <div className="text-sm text-black/80 mt-6">No completed sessions to display</div>
               )}
             </div>
           </div>
