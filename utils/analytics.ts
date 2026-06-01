@@ -9,8 +9,10 @@ export const analyticsCalculator = (arr: { duration: number; createdAt: Date; ti
 
   const now = new Date();
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const startOfWeekWindow = new Date(startOfToday);
-  startOfWeekWindow.setDate(startOfWeekWindow.getDate() - 6);
+  const startOfWeek = new Date(startOfToday);
+  const day = startOfWeek.getDay();
+  const daysSinceMonday = day === 0 ? 6 : day - 1;
+  startOfWeek.setDate(startOfWeek.getDate() - daysSinceMonday);
 
   for (const { duration, createdAt } of arr) {
     const sessionDate = new Date(createdAt);
@@ -20,7 +22,7 @@ export const analyticsCalculator = (arr: { duration: number; createdAt: Date; ti
       result.today += duration;
     } // for time spent today
 
-    if (sessionDayStart >= startOfWeekWindow && sessionDate <= now) {
+    if (sessionDayStart >= startOfWeek) {
       result.thisWeek += duration;
       result.weeklyUpdates.push({ duration, createdAt });
     } // for time spent this week

@@ -26,29 +26,33 @@ const TopSessionsCard = ({ topSessions }: { topSessions: SessionData }) => {
 
       {/* 2. Session List */}
       <div className="space-y-4">
-        {sessionData.map((session, index) => {
-          const { minutes, hours } = minToHours(session.duration);
-          return (
-            <div key={index} className="w-full ">
-              {/* Session Info (Name and Time) */}
-              <div className="flex justify-between items-baseline mb-2">
-                <span className="text-main text-xs font-medium  tracking-wide">{session.title}</span>
-                <span className="text-main text-xs font-medium tracking-wide whitespace-nowrap">
-                  {hours}h {minutes}m
-                </span>
-              </div>
+        {sessionData.length > 0 ? (
+          sessionData.map((session, index) => {
+            const { minutes, hours } = minToHours(session.duration);
+            return (
+              <div key={index} className="w-full ">
+                {/* Session Info (Name and Time) */}
+                <div className="flex justify-between items-baseline mb-2">
+                  <span className="text-main text-xs font-medium  tracking-wide">{session.title}</span>
+                  <span className="text-main text-xs font-medium tracking-wide whitespace-nowrap">
+                    {hours}h {minutes}m
+                  </span>
+                </div>
 
-              {/* Progress Bar Container */}
-              <div className="relative w-full h-1.5 bg-background rounded-full overflow-hidden">
-                {/* Animated Progress Bar */}
-                <div
-                  className={`absolute left-0 top-0 h-full rounded-full transition-all duration-1000 ease-out ${progressColor[index]}`}
-                  style={{ width: `${session.percentage}%` }}
-                />
+                {/* Progress Bar Container */}
+                <div className="relative w-full h-1.5 bg-background rounded-full overflow-hidden">
+                  {/* Animated Progress Bar */}
+                  <div
+                    className={`absolute left-0 top-0 h-full rounded-full transition-all duration-1000 ease-out ${progressColor[index]}`}
+                    style={{ width: `${session.percentage}%` }}
+                  />
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        ) : (
+          <div className="text-sm text-black/80 mt-2">create sessions to view your analytics</div>
+        )}
       </div>
     </div>
   );

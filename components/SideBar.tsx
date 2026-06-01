@@ -16,8 +16,10 @@ export default async function SideBar() {
   return (
     <div className="flex font-sans  flex-col text-heading w-55 px-5 py-6 justify-between bg-background border-r border-customBorder">
       <div>
-        <span className="text-2xl font-serif ">Focus</span>
-        <span className="block text-xs  text-main  ">Stay focused, stay curious</span>
+        <span className="text-3xl font-serif ">
+          <Link href={"/"}>Focus</Link>
+        </span>
+        <span className="block text-xs mt-1  text-main  ">Stay focused, stay curious</span>
       </div>
 
       <div className="mt-8 flex-1 ">
